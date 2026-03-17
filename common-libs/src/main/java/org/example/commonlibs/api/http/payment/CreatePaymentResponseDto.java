@@ -1,7 +1,4 @@
-package org.example.paymentservice.dto;
-
-import org.example.paymentservice.model.PaymentMethod;
-import org.example.paymentservice.model.PaymentStatus;
+package org.example.commonlibs.api.http.payment;
 
 import java.math.BigDecimal;
 

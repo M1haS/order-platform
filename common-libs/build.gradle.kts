@@ -6,25 +6,30 @@ version = "1.0.0"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 dependencies {
+    // BOM Spring Boot
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.5.7"))
+    annotationProcessor(platform("org.springframework.boot:spring-boot-dependencies:3.5.7"))
+    testImplementation(platform("org.springframework.boot:spring-boot-dependencies:3.5.7"))
+
     // Validation
-    api("jakarta.validation:jakarta.validation-api:3.0.2")
+    api("jakarta.validation:jakarta.validation-api")
 
     // JUnit
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
     // Lombok
-    implementation("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
-    testCompileOnly("org.projectlombok:lombok:1.18.30")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
+    implementation("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
 }

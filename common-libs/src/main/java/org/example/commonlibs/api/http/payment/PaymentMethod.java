@@ -1,4 +1,4 @@
-package org.example.paymentservice.model;
+package org.example.commonlibs.api.http.payment;
 
 public enum PaymentMethod {
     CARD,

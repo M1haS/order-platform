@@ -1,11 +1,15 @@
 package org.example.orderservice.domain.sevice;
 
 import lombok.RequiredArgsConstructor;
-import org.example.orderservice.domain.dto.CreateOrderRequestDto;
+import org.example.commonlibs.api.http.order.CreateOrderRequestDto;
+import org.example.commonlibs.api.http.order.OrderStatus;
+import org.example.commonlibs.api.http.payment.CreatePaymentRequestDto;
+import org.example.commonlibs.api.http.payment.PaymentStatus;
+import org.example.orderservice.domain.external.PaymentHttpClient;
 import org.example.orderservice.domain.mapper.OrderEntityMapper;
 import org.example.orderservice.domain.models.OrderEntity;
 import org.example.orderservice.domain.models.OrderItemEntity;
-import org.example.orderservice.domain.models.OrderStatus;
+import org.example.orderservice.domain.models.OrderPaymentRequest;
 import org.example.orderservice.domain.repository.OrderJpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ public class OrderService {
 
     private final OrderJpaRepository orderJpaRepository;
     private final OrderEntityMapper orderEntityMapper;
+    private final PaymentHttpClient paymentHttpClient;
 
     public OrderEntity create(CreateOrderRequestDto request) {
         var entity = orderEntityMapper.toEntity(request);
@@ -47,5 +52,25 @@ public class OrderService {
                     .add(totalPrice);
         }
         entity.setTotalAmount(totalPrice);
+    }
+
+    public OrderEntity processPayment(
+            Long id,
+            OrderPaymentRequest request
+    ) {
+        var entity = getOrderOrThrow(id);
+        if (!entity.getOrderStatus().equals(OrderStatus.PENDING_PAYMENT))
+            throw new RuntimeException("Order must be in status PENDING_PAYMENT");
+        var response = paymentHttpClient.createPayment(CreatePaymentRequestDto.builder()
+                        .orderId(id)
+                        .paymentMethod(request.paymentMethod())
+                        .amount(entity.getTotalAmount())
+                .build());
+        var status = response.paymentStatus().equals(PaymentStatus.PAYMENT_SUCCEEDED)
+                ? OrderStatus.PAYMENT_FAILED
+                : OrderStatus.PAID;
+
+        entity.setOrderStatus(status);
+        return orderJpaRepository.save(entity);
     }
 }

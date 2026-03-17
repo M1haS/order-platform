@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.commonlibs.api.http.order.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;

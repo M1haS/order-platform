@@ -1,8 +1,8 @@
 package org.example.orderservice.domain.mapper;
 
-import org.example.orderservice.domain.dto.CreateOrderRequestDto;
-import org.example.orderservice.domain.dto.OrderDto;
-import org.example.orderservice.domain.dto.OrderItemDto;
+import org.example.commonlibs.api.http.order.CreateOrderRequestDto;
+import org.example.commonlibs.api.http.order.OrderDto;
+import org.example.commonlibs.api.http.order.OrderItemDto;
 import org.example.orderservice.domain.models.OrderEntity;
 import org.example.orderservice.domain.models.OrderItemEntity;
 import org.mapstruct.*;

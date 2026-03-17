@@ -1,8 +1,6 @@
-package org.example.paymentservice.dto;
+package org.example.commonlibs.api.http.payment;
 
 import lombok.Builder;
-import org.example.paymentservice.model.PaymentMethod;
-import org.example.paymentservice.model.PaymentStatus;
 
 import java.math.BigDecimal;
 

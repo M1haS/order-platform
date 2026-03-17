@@ -1,4 +1,4 @@
-package org.example.orderservice.domain.dto;
+package org.example.commonlibs.api.http.order;
 
 import java.math.BigDecimal;
 

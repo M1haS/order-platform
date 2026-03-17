@@ -2,9 +2,10 @@ package org.example.orderservice.domain.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.orderservice.domain.dto.CreateOrderRequestDto;
-import org.example.orderservice.domain.dto.OrderDto;
+import org.example.commonlibs.api.http.order.CreateOrderRequestDto;
+import org.example.commonlibs.api.http.order.OrderDto;
 import org.example.orderservice.domain.mapper.OrderEntityMapper;
+import org.example.orderservice.domain.models.OrderPaymentRequest;
 import org.example.orderservice.domain.sevice.OrderService;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,5 +32,15 @@ public class OrderController {
         log.info("Retrieving order with id: {}", id);
         var found = orderService.getOrderOrThrow(id);
         return orderEntityMapper.toOrderDto(found);
+    }
+
+    @PostMapping("/{id}/pay")
+    public OrderDto payOrder(
+            @PathVariable Long id,
+            @RequestBody OrderPaymentRequest request
+    ) {
+        log.info("Paying order with id={}, request={}", id, request);
+        var entity = orderService.processPayment(id, request);
+        return orderEntityMapper.toOrderDto(entity);
     }
 }

@@ -1,7 +1,7 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.2.0"
-    id("io.spring.dependency-management") version "1.1.4"
+    id("org.springframework.boot") version "3.5.7"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 version = "1.0.0"
@@ -30,9 +30,9 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok")
 
     // additional libs
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.0")
     annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 }
 

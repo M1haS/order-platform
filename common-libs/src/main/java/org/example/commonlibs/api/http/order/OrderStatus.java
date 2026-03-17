@@ -1,4 +1,4 @@
-package org.example.orderservice.domain.models;
+package org.example.commonlibs.api.http.order;
 
 public enum OrderStatus {
     PENDING_PAYMENT,
