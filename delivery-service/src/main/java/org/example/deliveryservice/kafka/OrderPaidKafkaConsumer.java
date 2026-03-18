@@ -19,7 +19,7 @@ public class OrderPaidKafkaConsumer {
     private final DeliveryService deliveryService;
 
     @KafkaListener(
-            topics = "${order-paid-topics}",
+            topics = "${order-paid-topic}",
             containerFactory = "orderPaidEventListenerFactory"
     )
     public void listen(OrderPaidEvent event) {

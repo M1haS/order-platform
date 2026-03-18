@@ -17,8 +17,6 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.testcontainers:testcontainers")
-    testImplementation("org.testcontainers:postgresql")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
@@ -27,9 +25,6 @@ dependencies {
     // lombok
     implementation("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("org.postgresql:postgresql")
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
 

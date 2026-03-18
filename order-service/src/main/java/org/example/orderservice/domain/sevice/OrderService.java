@@ -78,11 +78,13 @@ public class OrderService {
                         .amount(entity.getTotalAmount())
                 .build());
         var status = response.paymentStatus().equals(PaymentStatus.PAYMENT_SUCCEEDED)
-                ? OrderStatus.PAYMENT_FAILED
-                : OrderStatus.PAID;
+                ? OrderStatus.PAID
+                : OrderStatus.PAYMENT_FAILED;
 
         entity.setOrderStatus(status);
-        sendOrderPaidEvent(entity, response);
+        if (status.equals(OrderStatus.PAID)) {
+            sendOrderPaidEvent(entity, response);
+        }
         return orderJpaRepository.save(entity);
     }
 
@@ -105,8 +107,10 @@ public class OrderService {
 
     public void processDeliveryAssigned(DeliveryAssignedEvent event) {
         var order = getOrderOrThrow(event.orderId());
-        if (!order.getOrderStatus().equals(OrderStatus.PAID))
-           processIncorrectDeliveryState(order);
+        if (!order.getOrderStatus().equals(OrderStatus.PAID)) {
+            processIncorrectDeliveryState(order);
+            return;
+        }
 
         order.setOrderStatus(OrderStatus.DELIVERY_ASSIGNED);
         order.setCourierName(event.courierName());
