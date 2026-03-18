@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,7 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Testcontainers
-@ActiveProfiles("test")
 class OrderServiceIntegrationTest {
 
     @Container
@@ -71,9 +69,17 @@ class OrderServiceIntegrationTest {
     @SuppressWarnings("unchecked")
     KafkaTemplate<Long, ?> kafkaTemplate;
 
+    @Autowired
+    javax.sql.DataSource dataSource;
+
     @BeforeEach
-    void setUp() {
-        orderJpaRepository.deleteAll();
+    void setUp() throws Exception {
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.createStatement()) {
+                stmt.execute("DELETE FROM order_item_entity");
+                stmt.execute("DELETE FROM orders");
+            }
+        }
         when(kafkaTemplate.send(anyString(), anyLong(), any()))
                 .thenReturn(CompletableFuture.completedFuture(
                         mock(org.springframework.kafka.support.SendResult.class)));

@@ -7,6 +7,7 @@ import org.example.orderservice.domain.models.OrderPaymentRequest;
 import org.example.commonlibs.api.http.payment.PaymentMethod;
 import org.example.orderservice.domain.repository.OrderJpaRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +40,7 @@ class OrderIntegrationTest {
 
     @Container
     static KafkaContainer kafka = new KafkaContainer(
-            DockerImageName.parse("confluentinc/cp-kafka:7.6.1"));
+            DockerImageName.parse("confluentinc/cp-kafka:7.6.0"));
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -47,7 +48,7 @@ class OrderIntegrationTest {
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
         registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
-        registry.add("payment-service.base-url", () -> "http://localhost:9999"); // mock
+        registry.add("payment-service.base-url", () -> "http://localhost:9999");
     }
 
     @Autowired
@@ -56,12 +57,20 @@ class OrderIntegrationTest {
     @Autowired
     private OrderJpaRepository orderJpaRepository;
 
+    @Autowired
+    javax.sql.DataSource dataSource;
+
     @LocalServerPort
     private int port;
 
     @AfterEach
-    void cleanup() {
-        orderJpaRepository.deleteAll();
+    void cleanup() throws Exception {
+        try (var conn = dataSource.getConnection()) {
+            try (var stmt = conn.createStatement()) {
+                stmt.execute("DELETE FROM order_item_entity");
+                stmt.execute("DELETE FROM orders");
+            }
+        }
     }
 
     @Test

@@ -1,9 +1,9 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
   liquibase:
-    enabled: false
+    enabled: true
   kafka:
     bootstrap-servers: do-not-connect
 order-paid-topic: order-paid-test
