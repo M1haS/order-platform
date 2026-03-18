@@ -1,7 +1,7 @@
 package org.example.paymentservice.mapper;
 
-import org.example.paymentservice.dto.CreatePaymentRequestDto;
-import org.example.paymentservice.dto.CreatePaymentResponseDto;
+import org.example.commonlibs.api.http.payment.CreatePaymentRequestDto;
+import org.example.commonlibs.api.http.payment.CreatePaymentResponseDto;
 import org.example.paymentservice.model.PaymentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

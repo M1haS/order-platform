@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.commonlibs.api.http.payment.PaymentMethod;
+import org.example.commonlibs.api.http.payment.PaymentStatus;
 
 import java.math.BigDecimal;
 

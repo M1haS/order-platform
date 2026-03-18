@@ -1,23 +1,30 @@
 package org.example.orderservice.domain.sevice;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.commonlibs.api.http.order.CreateOrderRequestDto;
 import org.example.commonlibs.api.http.order.OrderStatus;
 import org.example.commonlibs.api.http.payment.CreatePaymentRequestDto;
+import org.example.commonlibs.api.http.payment.CreatePaymentResponseDto;
 import org.example.commonlibs.api.http.payment.PaymentStatus;
+import org.example.commonlibs.api.kafka.DeliveryAssignedEvent;
+import org.example.commonlibs.api.kafka.OrderPaidEvent;
 import org.example.orderservice.domain.external.PaymentHttpClient;
 import org.example.orderservice.domain.mapper.OrderEntityMapper;
 import org.example.orderservice.domain.models.OrderEntity;
 import org.example.orderservice.domain.models.OrderItemEntity;
 import org.example.orderservice.domain.models.OrderPaymentRequest;
 import org.example.orderservice.domain.repository.OrderJpaRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -25,6 +32,10 @@ public class OrderService {
     private final OrderJpaRepository orderJpaRepository;
     private final OrderEntityMapper orderEntityMapper;
     private final PaymentHttpClient paymentHttpClient;
+    private final KafkaTemplate<Long, OrderPaidEvent> kafkaTemplate;
+
+    @Value("${order-paid-topic}")
+    private String orderPaidTopic;
 
     public OrderEntity create(CreateOrderRequestDto request) {
         var entity = orderEntityMapper.toEntity(request);
@@ -71,6 +82,43 @@ public class OrderService {
                 : OrderStatus.PAID;
 
         entity.setOrderStatus(status);
+        sendOrderPaidEvent(entity, response);
         return orderJpaRepository.save(entity);
+    }
+
+    private void sendOrderPaidEvent(
+            OrderEntity entity,
+            CreatePaymentResponseDto paymentResponseDto
+    ) {
+        kafkaTemplate.send(
+                orderPaidTopic,
+                entity.getId(),
+                OrderPaidEvent.builder()
+                        .orderId(entity.getId())
+                        .paymentMethod(paymentResponseDto.paymentMethod())
+                        .paymentId(paymentResponseDto.paymentId())
+                        .build()
+        ).thenAccept(result -> {
+            log.info("Order paid event sent: id={}", entity.getId());
+        });
+    }
+
+    public void processDeliveryAssigned(DeliveryAssignedEvent event) {
+        var order = getOrderOrThrow(event.orderId());
+        if (!order.getOrderStatus().equals(OrderStatus.PAID))
+           processIncorrectDeliveryState(order);
+
+        order.setOrderStatus(OrderStatus.DELIVERY_ASSIGNED);
+        order.setCourierName(event.courierName());
+        order.setEtaMinutes(event.etaMinutes());
+        orderJpaRepository.save(order);
+        log.info("Order delivery assigned processed: orderId={}", order.getId());
+    }
+
+    private void processIncorrectDeliveryState(OrderEntity order) {
+        if (order.getOrderStatus().equals(OrderStatus.DELIVERY_ASSIGNED))
+            log.info("Order delivery already processed: orderId={}", order.getId());
+        else if (!order.getOrderStatus().equals(OrderStatus.PAID))
+            log.error("Trying to assign delivery but order have incorrect state: state={}", order.getId());
     }
 }

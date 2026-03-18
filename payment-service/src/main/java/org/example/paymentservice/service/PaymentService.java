@@ -2,11 +2,11 @@ package org.example.paymentservice.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.paymentservice.dto.CreatePaymentRequestDto;
-import org.example.paymentservice.dto.CreatePaymentResponseDto;
+import org.example.commonlibs.api.http.payment.CreatePaymentRequestDto;
+import org.example.commonlibs.api.http.payment.CreatePaymentResponseDto;
+import org.example.commonlibs.api.http.payment.PaymentMethod;
+import org.example.commonlibs.api.http.payment.PaymentStatus;
 import org.example.paymentservice.mapper.PaymentEntityMapper;
-import org.example.paymentservice.model.PaymentMethod;
-import org.example.paymentservice.model.PaymentStatus;
 import org.example.paymentservice.repository.PaymentJpaRepository;
 import org.springframework.stereotype.Service;
 

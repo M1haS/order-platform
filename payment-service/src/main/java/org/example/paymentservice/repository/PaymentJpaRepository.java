@@ -1,7 +1,7 @@
 package org.example.paymentservice.repository;
 
+import org.example.commonlibs.api.http.payment.PaymentMethod;
 import org.example.paymentservice.model.PaymentEntity;
-import org.example.paymentservice.model.PaymentMethod;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

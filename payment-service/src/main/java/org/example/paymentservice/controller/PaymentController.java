@@ -2,8 +2,8 @@ package org.example.paymentservice.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.paymentservice.dto.CreatePaymentRequestDto;
-import org.example.paymentservice.dto.CreatePaymentResponseDto;
+import org.example.commonlibs.api.http.payment.CreatePaymentRequestDto;
+import org.example.commonlibs.api.http.payment.CreatePaymentResponseDto;
 import org.example.paymentservice.service.PaymentService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
