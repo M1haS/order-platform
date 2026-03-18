@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  liquibase:
+    enabled: false
+  kafka:
+    bootstrap-servers: do-not-connect
+order-paid-topic: order-paid-test
+delivery-assigned-topic: delivery-assigned-test
+payment-service:
+  base-url: http://localhost:9999

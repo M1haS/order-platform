@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-payments-sequence
+      author: m1has
+      changes:
+        - createSequence:
+            sequenceName: payments_seq
+            startValue: 1
+            incrementBy: 50
+
+  - changeSet:
+      id: 001-create-payments-table
+      author: m1has
+      changes:
+        - createTable:
+            tableName: payments
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: amount
+                  type: numeric(19, 2)
+              - column:
+                  name: payment_status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_method
+                  type: varchar(50)
+                  constraints:
+                    nullable: false

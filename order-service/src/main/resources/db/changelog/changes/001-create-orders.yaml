@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-orders
+      author: m111
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: costumer_id
+                  type: BIGINT
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: total_amount
+                  type: DECIMAL(19, 2)
+              - column:
+                  name: courier_name
+                  type: VARCHAR(255)
+              - column:
+                  name: eta_minutes
+                  type: INTEGER
+              - column:
+                  name: order_status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false

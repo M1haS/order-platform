@@ -8,26 +8,13 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: validate
+    show-sql: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
 server:
   port: 8083
 
 order-paid-topic: orders.event
 delivery-assigned-topic: delivery.events
-
-payment-service:
-  base-url: http://localhost:8081
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE

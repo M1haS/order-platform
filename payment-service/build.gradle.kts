@@ -16,19 +16,23 @@ dependencies {
     implementation(project(":common-libs"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    implementation("org.liquibase:liquibase-core")
+
     runtimeOnly("org.postgresql:postgresql")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.testcontainers:testcontainers")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:junit-jupiter")
     testRuntimeOnly("com.h2database:h2")
 
-    // lombok
     implementation("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
 
-    // additional libs
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")

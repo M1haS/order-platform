@@ -16,6 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Import(TestKafkaConfiguration.class)
 @TestPropertySource(properties = {
+        "spring.liquibase.enabled=false",
+        "spring.jpa.hibernate.ddl-auto=create-drop",
         "spring.kafka.bootstrap-servers=do-not-connect",
         "order-paid-topic=order-paid-test",
         "delivery-assigned-topic=delivery-assigned-test"

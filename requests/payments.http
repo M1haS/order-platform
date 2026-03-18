@@ -1,0 +1,9 @@
+### Создать платёж (internal — вызывается из order-service)
+POST http://localhost:8081/api/payments
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "paymentMethod": "CARD",
+  "amount": 1500.00
+}

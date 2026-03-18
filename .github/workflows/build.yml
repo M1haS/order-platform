@@ -10,21 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: orders
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
       - uses: actions/checkout@v4
 
@@ -51,10 +36,6 @@ jobs:
 
       - name: Run tests
         run: ./gradlew test
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/orders
-          SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: postgres
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4

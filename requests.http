@@ -1,0 +1,43 @@
+### Создать заказ
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "address": "ул. Ленина 1",
+  "items": [
+    {
+      "itemId": 10,
+      "quantity": 2
+    }
+  ]
+}
+
+### Получить заказ
+GET http://localhost:8080/api/orders/1
+
+### Оплатить заказ картой (успех)
+POST http://localhost:8080/api/orders/1/pay
+Content-Type: application/json
+
+{
+  "paymentMethod": "CARD"
+}
+
+### Оплатить заказ QR (отказ)
+POST http://localhost:8080/api/orders/1/pay
+Content-Type: application/json
+
+{
+  "paymentMethod": "QR"
+}
+
+### Создать платёж напрямую (internal)
+POST http://localhost:8081/api/payments
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "paymentMethod": "CARD",
+  "amount": 1500.00
+}

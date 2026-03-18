@@ -1,5 +1,10 @@
 # Order Platform
 
+![Build](https://github.com/M1haS/order-platform/actions/workflows/build.yml/badge.svg)
+![Java](https://img.shields.io/badge/Java-21-blue)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green)
+![Tests](https://img.shields.io/badge/tests-31%20passing-brightgreen)
+
 Микросервисная платформа для обработки заказов на Java + Spring Boot.
 
 ## Архитектура
@@ -15,11 +20,8 @@
 ┌─────────────────┐
 │delivery-service │
 │   :8083         │
-│                 │
-│  Kafka:         │
-│  delivery.events│
 └────────┬────────┘
-         │
+         │  Kafka: delivery.events
          └──► order-service (обновление статуса)
 ```
 
@@ -39,72 +41,47 @@ PENDING_PAYMENT → PAID → DELIVERY_ASSIGNED
                PAYMENT_FAILED
 ```
 
-### Инфраструктура
-
-- **PostgreSQL** — хранение данных
-- **Kafka** — асинхронное взаимодействие между сервисами
-- **Топики:** `orders.event`, `delivery.events`
-
 ---
 
 ## Быстрый старт
 
-### 1. Запуск инфраструктуры
-
 ```bash
+# 1. Инфраструктура
 docker-compose up -d
-```
 
-### 2. Запуск сервисов
-
-```bash
+# 2. Сервисы
 ./gradlew :order-service:bootRun --args='--spring.profiles.active=local'
 ./gradlew :payment-service:bootRun
 ./gradlew :delivery-service:bootRun --args='--spring.profiles.active=local'
 ```
 
-### 3. Swagger UI
-
-- Order Service: http://localhost:8080/swagger-ui.html
-- Payment Service: http://localhost:8081/swagger-ui.html
+Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 ---
 
 ## API
 
-### Order Service `POST /api/orders`
-
-Создать заказ:
+### `POST /api/orders` — создать заказ
 
 ```json
 {
   "customerId": 1,
   "address": "ул. Ленина 1",
-  "items": [
-    { "itemId": 10, "quantity": 2 }
-  ]
+  "items": [{ "itemId": 10, "quantity": 2 }]
 }
 ```
 
-### `GET /api/orders/{id}`
+### `GET /api/orders/{id}` — получить заказ
 
-Получить заказ по ID.
-
-### `POST /api/orders/{id}/pay`
-
-Оплатить заказ:
+### `POST /api/orders/{id}/pay` — оплатить заказ
 
 ```json
-{
-  "paymentMethod": "CARD"
-}
+{ "paymentMethod": "CARD" }
 ```
 
-Методы оплаты: `CARD` (успех), `QR` (отказ).
+Методы: `CARD` (успех), `QR` (отказ).
 
-### Payment Service `POST /api/payments`
-
-Внутренний эндпоинт, вызывается из `order-service`.
+Примеры запросов: [`requests.http`](requests.http)
 
 ---
 
@@ -114,21 +91,23 @@ docker-compose up -d
 ./gradlew test
 ```
 
-Отчёты после запуска:
-- `order-service/build/reports/tests/test/index.html`
-- `payment-service/build/reports/tests/test/index.html`
-- `delivery-service/build/reports/tests/test/index.html`
+- 18 unit тестов — order-service
+- 6 unit тестов — payment-service
+- 7 unit тестов — delivery-service
+- Integration тесты с Testcontainers (PostgreSQL + Kafka)
 
 ---
 
 ## Стек
 
-- Java 21
-- Spring Boot 3.x
-- Spring Kafka
-- Spring Data JPA
-- MapStruct
-- Lombok
-- PostgreSQL
-- H2 (тесты)
-- JUnit 5 + Mockito
+- Java 21, Spring Boot 3
+- Apache Kafka
+- PostgreSQL + Liquibase
+- Spring Data JPA, MapStruct, Lombok
+- Docker Compose
+- JUnit 5, Mockito, Testcontainers
+- Swagger / OpenAPI
+
+## Contributing
+
+См. [CONTRIBUTING.md](CONTRIBUTING.md)

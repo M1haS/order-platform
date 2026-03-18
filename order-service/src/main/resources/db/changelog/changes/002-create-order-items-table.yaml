@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-order-items-sequence
+      author: m1has
+      changes:
+        - createSequence:
+            sequenceName: order_item_entity_seq
+            startValue: 1
+            incrementBy: 50
+
+  - changeSet:
+      id: 002-create-order-items-table
+      author: m1has
+      changes:
+        - createTable:
+            tableName: order_item_entity
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_order_items_order
+                    references: orders(id)
+              - column:
+                  name: item_id
+                  type: bigint
+              - column:
+                  name: quantity
+                  type: integer
+              - column:
+                  name: item_name
+                  type: varchar(255)
+              - column:
+                  name: price_at_purchase
+                  type: numeric(19, 2)
